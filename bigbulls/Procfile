@@ -1,1 +1,1 @@
-web: gunicorn bigbulls.wsgi 
+web: python manage.py runserver
