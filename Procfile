@@ -1,1 +1,1 @@
-web: gunicorn bigbulls.wsgi:application --log-file 
+web: gunicorn bigbulls.wsgi
