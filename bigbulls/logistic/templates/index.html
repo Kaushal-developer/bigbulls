@@ -1,0 +1,376 @@
+{% load static %}   
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-2.0.0-rc.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Stocks</title>
+</head>
+<style>
+.sidebar {
+    max-width: 14rem !important;
+    width: 100%;
+    min-height: 60vh;
+    height: 660px;
+    background-color: #f5f5f8;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+  }
+   </style>
+<body>
+<div style="min-height: 60vh; height:660px;overflow:auto;">
+   <div class="col-sm-3">         
+        <nav class="sidebar">
+            <span id="nav-tab" role="tablist">
+                <img src="{% static 'logistic/myLOGO.png' %}">
+                <ul>
+                    <li class="nav-link"><a href="#nav-home" onclick="openPage('nav-home')" style="text-decoration: none;">Home</a></li>
+                    <li class="nav-link"><a href="#nav-getQuote" onclick="openPage('nav-getQuote')" style="text-decoration: none;">Next Week price</a></li>
+                    <li class="nav-link"><a href="#nav-activeDecline" onclick="openPage('nav-activeDecline')" style="text-decoration: none;">ACtive-Decline</a></li>
+                    <li class="nav-link"><a href="#nav-gainLoss" onclick="openPage('nav-gainLoss')" style="text-decoration: none;">Gain-Loss</a></li>
+                    <li class="nav-link"><a href="#nav-trending" onclick="openPage('nav-trending')" style="text-decoration: none;">Trending</a></li>
+                    <li class="nav-link"><a href="#nav-contact"  onclick="openPage('nav-contact')" style="text-decoration: none;">Contact</a></li>
+                </ul>
+            </span>
+        </nav>
+    </div>
+
+    <div class="tab-content col-sm-9" style="margin-left: 20%;" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <span>
+                <h1>Live forcast</h1>
+                <input class="form-control me-2" id="id_symbol_home" type="search" placeholder="Enter Script Name" aria-label="Search" required>
+                <button class="btnlive_details btn-outline-success" onclick="searchScriptHome()" type="submit">Search</button>
+            </span>
+            <br>   <br>  
+            <div class="row" style="width: 50%;height:50px;">
+                <div class="col-sm-6">
+                    <div id="bid_detail1"></div>
+                </div>
+                <div class="col-sm-6">
+                    <div id="sell_detail2"></div>
+                </div>   
+            </div>
+            
+        </div>
+
+        <div class="tab-pane fade" id="nav-getQuote">
+            <div><h1>Next Week close price prediction</h1></div>
+                <div class="row">
+                    <div class="col-sm-6" style="margin-top: 15px;">
+                        <input class="form-control me-2" id="id_symbol" type="search" placeholder="Enter Script Name" aria-label="Search" required>            
+                    </div>
+                    <div class="col-sm-2">    
+                        <label for="id_from_date">From Date</label>
+                        <input type="date" id="id_from_date" name="from_date" required >
+                    </div>
+                    <div class="col-sm-2">
+                        <label for="id_to_date">To Date</label>
+                        <input type="date" id="id_to_date" name="to_date" required>
+                    </div>
+                    <div class="col-sm-2" style="margin-top: 15px;">
+                        <button class="btn btn-outline-success"  style="margin-left: 30px;"  onclick="searchScript()" type="submit">Search</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <span id = "test_Score" style="display: none;">Test Score</span>
+                    <span id ="predicted_op"></span>
+                    <div id="plotly"></div>
+                    <div style="height:100px" id = "getQuote"></div>    
+                </div>
+            
+                
+            
+            
+            
+        </div>
+
+        <div class="tab-pane fade" id="nav-activeDecline" role="tabpanel" aria-labelledby="nav-activeDecline-tab"> 
+                <h1>Advances and Declines</h1>
+                <div id = "advanceDecline"></div>
+        </div>
+
+        <div class="tab-pane fade" id="nav-gainLoss" role="tabpanel" aria-labelledby="nav-gainLoss-tab">
+            <div class="col-md-6">
+                <h1 style="color: green;">Top Gainers</h1>
+                    <div id = "top_gainers"></div>
+            </div>
+            <div class="col-md-6">
+                    <h1 style="color: rgb(226, 28, 38);">Top Lossers</h1>
+                <div id="gain_loss"></div>
+            </div>
+    
+        </div>
+
+        <div class="tab-pane fade" id="nav-trending" role="tabpanel" aria-labelledby="nav-trending-tab">
+                <h1>Active Trending Stocks of the Month</h1>
+                <div id = "activeMonthly">    </div>    
+        </div>
+
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">Contact</div>
+    </div>
+</div>
+<div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</body>
+</html>
+
+<script>   
+    
+    
+    function searchScriptHome(){
+        var script = $('#id_symbol_home').val();
+        if ( script == '')    {
+            alert('Please Enter script and select the date reange');
+        }
+        $.ajax({
+            type: "POST",
+            url: "/logistic/get_realtime_data/",
+            data: {symbol:script,csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success:function(result){
+                data =JSON.parse(JSON.stringify(result["realTime"]));
+                var buyingPrice =['buyPrice1','buyPrice2','buyPrice3','buyPrice4','buyPrice5']
+                var qty_buy = ['buyQuantity1','buyQuantity2','buyQuantity3','buyQuantity4','buyQuantity5']
+                var sellingPrice =['sellPrice1','sellPrice2','sellPrice3','sellPrice4','sellPrice5']
+                var qty_sell = ['sellQuantity1','sellQuantity2','sellQuantity3','sellQuantity4','sellQuantity5']
+                var HTML_table1 = '<table class="table" style="background-color:green;color:#FFFFFF;"><tbody><tr style="background-color:green;"><th>Qty</th><th  style="text-align: right;">BID</th>';
+                    var trHTML1 = ''
+                    for (i = 0; i < buyingPrice.length; i++) {
+                        trHTML1 += '<tr style="background-color:green;height: 50px;"><td>'
+                            + ((data[qty_buy[i]]!= null)?data[qty_buy[i]] : '')
+                            + '</td><td align="right">'
+                            + ((data[buyingPrice[i]]!= null)?data[buyingPrice[i]] : '')
+                            + '</td></tr>';
+                    }
+                    trHTML_1= HTML_table1 + trHTML1+ '</tbody></table>';    
+                    $('#bid_detail1').html(trHTML_1);    
+                var HTML_table2 = '<table class="table"  BORDERCOLOR=RED style="background-color:red;color:#FFFFFF;"><tbody><tr  style="background-color:red;"><th>Qty</th><th style="text-align: right;">ASK</th></tr>';
+                    var trHTML2 = ''
+                    for (i = 0; i < sellingPrice.length; i++) {
+                        trHTML2 += '<tr  style="background-color:red;height: 50px;"><td>'
+                            + ((data[qty_sell[i]]!= null)?data[qty_sell[i]] : '')
+                            + '</td><td align="right">'
+                            + ((data[sellingPrice[i]]!= null)?data[sellingPrice[i]] : '')
+                            + '</td></tr>';
+                    }
+                    trHTML_2= HTML_table2 + trHTML2+ '</tbody></table>';  
+                    $('#sell_detail2').html(trHTML_2);        
+               
+            }
+                
+        })
+       
+    }
+    function openPage(div_id){
+        var nav_list =['nav-home','nav-getQuote','nav-activeDecline','nav-gainLoss','nav-trending','nav-contact']
+        for(i=0;i<nav_list.length;i++){
+            if(div_id == nav_list[i]){
+                $('#'+div_id).show()
+                $('#'+div_id).addClass("active");
+                $('#'+div_id).addClass("show");
+            }else{
+                $('#'+nav_list[i]).hide()
+                $('#'+nav_list[i]).removeClass("active");
+                $('#'+nav_list[i]).removeClass("show");
+            }
+        }
+    }
+
+    function searchScript(){
+        var script = $('#id_symbol').val();
+        var from_date =$('#id_from_date').val();
+        var to_date =$('#id_to_date').val();
+        if ( from_date == '' && to_date == '' && script=='')    {
+            alert('Please Enter script and select the date reange');
+        }
+        $.ajax({
+            type: "POST",
+            url: "/logistic/get_history_data/",
+            data: {symbol:script,from_date:from_date,to_date:to_date,csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success:function(result){
+                history_data = JSON.parse(result["history"]);
+                future_prices = JSON.parse(result["response"])
+                var coulmns_name = ''
+                var HTML = '<table class="table"><tbody><tr>'
+                for (i = 0; i < history_data.columns.length; i++) {
+                    coulmns_name = coulmns_name +
+                    '<th>' + history_data.columns[i] + '</th>';
+                }
+                HTML = HTML +coulmns_name+ '</tr>';
+                var data_rows ='';
+                for (j = 0 ; j < history_data.data.length; j++) {
+                    data_rows += '<tr>';
+                    for (k=0; k< history_data.data[j].length; k++){
+                        data_rows += '<td>'+history_data.data[j][k] +'</td>';
+                    }
+                    data_rows = data_rows + '</tr>';
+                }
+                HTML = HTML + data_rows + '</tbody></table>';
+                $('#getQuote').html(HTML); 
+                var trace1 = {
+                    x: [1, 2, 3, 4,5],
+                    y: future_prices['forecast_set'],
+                    mode: 'markers',
+                    type: 'scatter'
+                  };
+                  
+                  
+                  var data = [trace1];
+                  
+                  Plotly.newPlot('plotly', data);
+                  $('#test_Score').css("display", "block");
+              $('#predicted_op').html(future_prices['test_score'])
+            }
+        })
+    }
+
+    function getData(){
+        $.ajax({
+            type: "POST",
+            url: "/logistic/get_monthly_active/",
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success:function(result){
+                data =  result["monthly_active_trending"]
+                var HTML = '<table class="table"><tbody><tr><th>symbol</th><th>Total shares</th><th>Trade quantity</th><th>No of Trade</th><th>Avg Daily Turnover</th><th>Turnover</th></tr>';
+                var trHTML = ''
+                for (i = 0; i < data.length; i++) {
+                
+                    trHTML += '<tr><td>'
+                        + data[i].security
+                        + '</td><td>'
+                        + data[i].sharetotal
+                        + '</td><td>'
+                        + data[i].trdQty
+                        + '</td><td>'
+                        + data[i].nooftrades
+                        + '</td><td>'
+                        + data[i].avgdailyturn
+                        + '</td><td>'
+                        + data[i].turnover
+                        + '</td></tr>';
+                }
+                trHTML= HTML + trHTML+ '</tbody></table>';      
+                $('#activeMonthly').html(trHTML);        
+            }
+        });
+            
+    
+            $.ajax({
+                type: "POST",
+                url: "/logistic/get_top_loosers/",
+                data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success:function(result){
+                    data = result["top_losers"]
+                    var HTML = '<table class="table"><tbody><tr><th>symbol</th><th>series</th><th>openPrice</th><th>highPrice</th><th>lowPrice</th><th>ltp</th><th>previousPrice</th><th>netPrice</th><th>tradedQuantity</th><th>turnoverInLakhs</th><th>lastCorpAnnouncementDate</th><th>lastCorpAnnouncement</th></tr></thead>';
+                    var trHTML = ''
+                    for (i = 0; i < data.length; i++) {
+                        
+                        trHTML += '<tr><td>'
+                            + data[i].symbol
+                            + '</td><td>'
+                            + data[i].series
+                            + '</td><td>'
+                            + data[i].openPrice
+                            + '</td><td>'
+                            + data[i].highPrice
+                            + '</td><td>'
+                            + data[i].lowPrice
+                            + '</td><td>'
+                            + data[i].ltp
+                            + '</td><td>'
+                            + data[i].previousPrice
+                            + '</td><td>'
+                            + data[i].netPrice
+                            + '</td><td>'
+                            + data[i].tradedQuantity
+                            + '</td><td>'
+                            + data[i].turnoverInLakhs
+                            + '</td><td>'
+                            + data[i].lastCorpAnnouncementDate
+                            + '</td><td>'
+                            + data[i].lastCorpAnnouncement
+                            + '</td></tr>';
+                        }
+                        trHTML= HTML + trHTML+ '</tbody></table>';         
+                        $('#gain_loss').html(trHTML);
+                } 
+            });
+            $.ajax({
+                type: "POST",
+                url: "/logistic/get_advance_declined/",
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success:function(result){
+                    data = result["adv_dec"]
+                    var HTML = '<table class="table"><tbody><tr><th>Script</th><th>Advances</th><th>Declines</th><th>Unchanged</th> </tr></thead>';
+                    var trHTML = '';
+                    for (i = 0; i < data.length; i++) {
+                        
+                        trHTML += '<tr><td>'
+                            + data[i].indice
+                            + '</td><td>'
+                            + data[i].advances
+                            + '</td><td>'
+                            + data[i].declines
+                            + '</td><td>'
+                            + data[i].unchanged
+                            + '</td></tr>';
+                    }
+                    trHTML= HTML + trHTML+ '</tbody></table>';        
+                    $('#advanceDecline').html(trHTML);
+                    
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "/logistic/get_top_gainer/",
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success:function(result){
+                    data = result["top_gainers"]  
+                    var HTML = '<table class="table"><tbody><tr><th>symbol</th><th>series</th><th>openPrice</th><th>highPrice</th><th>lowPrice</th><th>ltp</th><th>previousPrice</th><th>netPrice</th><th>tradedQuantity</th><th>turnoverInLakhs</th><th>lastCorpAnnouncementDate</th><th>lastCorpAnnouncement</th></tr></thead>';
+                    var trHTML = ''
+                    for (i = 0; i < data.length; i++) {
+                        
+                        trHTML += '<tr><td>'
+                            + data[i].symbol
+                            + '</td><td>'
+                            + data[i].series
+                            + '</td><td>'
+                            + data[i].openPrice
+                            + '</td><td>'
+                            + data[i].highPrice
+                            + '</td><td>'
+                            + data[i].lowPrice
+                            + '</td><td>'
+                            + data[i].ltp
+                            + '</td><td>'
+                            + data[i].previousPrice
+                            + '</td><td>'
+                            + data[i].netPrice
+                            + '</td><td>'
+                            + data[i].tradedQuantity
+                            + '</td><td>'
+                            + data[i].turnoverInLakhs
+                            + '</td><td>'
+                            + data[i].lastCorpAnnouncementDate
+                            + '</td><td>'
+                            + data[i].lastCorpAnnouncement
+                            + '</td></tr>';
+                    }
+                    trHTML= HTML + trHTML+ '</tbody></table>';       
+                    $('#top_gainers').html(trHTML);
+                }
+                });
+    }
+    getData();
+    
+    
+
+</script>
