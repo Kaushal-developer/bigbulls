@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <table>
+       
+            <th>Name</th>
+            <th>Advance</th>
+            <th>Declines</th>
+            <th>Unchanged</th>
+      
+            {%for field in context%}
+        <tr> <td> {{field.name}}</td>
+            <td> {{field.advance}}</td>
+                <td> {{field.declines}}</td>
+                    <td> {{field.unchanged}}</td>
+                        <td> {{field.created_on}}</td>  
+            {%endfor%}
+        </tr>
+        
+    </table>
+</body>
+</html>
