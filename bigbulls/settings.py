@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['127.0.0.1','bigbulls.herokuapp.com']
 
 INSTALLED_APPS = [
     'logistic',
-    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,8 +42,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'whitenoise.runserver_nostatic',
-    'django.contrib.staticfiles',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
