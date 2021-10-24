@@ -135,6 +135,11 @@
         }
         $.ajax({
             type: "POST",
+            "crossDomain": true,
+            "headers": {
+                "accept": "application/json",
+                "Access-Control-Allow-Origin":"*"
+            },
             url: "/logistic/get_realtime_data/",
             data: {symbol:script,csrfmiddlewaretoken: '{{ csrf_token }}' },
             success:function(result){
@@ -195,6 +200,11 @@
         }
         $.ajax({
             type: "POST",
+            "crossDomain": true,
+            "headers": {
+                "accept": "application/json",
+                "Access-Control-Allow-Origin":"*"
+            },
             url: "/logistic/get_history_data/",
             data: {symbol:script,from_date:from_date,to_date:to_date,csrfmiddlewaretoken: '{{ csrf_token }}' },
             success:function(result){
@@ -237,6 +247,11 @@
     function getData(){
         $.ajax({
             type: "POST",
+            "crossDomain": true,
+            "headers": {
+                "accept": "application/json",
+                "Access-Control-Allow-Origin":"*"
+            },
             url: "/logistic/get_monthly_active/",
             data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
             success:function(result){
@@ -267,6 +282,11 @@
     
             $.ajax({
                 type: "POST",
+                "crossDomain": true,
+                "headers": {
+                "accept": "application/json",
+                "Access-Control-Allow-Origin":"*"
+                },
                 url: "/logistic/get_top_loosers/",
                 data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
                 success:function(result){
@@ -307,6 +327,11 @@
             });
             $.ajax({
                 type: "POST",
+                "crossDomain": true,
+                "headers": {
+                    "accept": "application/json",
+                    "Access-Control-Allow-Origin":"*"
+                },
                 url: "/logistic/get_advance_declined/",
                 data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
                 success:function(result){
@@ -332,6 +357,11 @@
             });
             $.ajax({
                 type: "POST",
+                "crossDomain": true,
+                "headers": {
+                    "accept": "application/json",
+                    "Access-Control-Allow-Origin":"*"
+                },
                 url: "/logistic/get_top_gainer/",
                 data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
                 success:function(result){
