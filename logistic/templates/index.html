@@ -125,7 +125,7 @@
 </body>
 </html>
 
-<script>   
+<script type="text/javascript">   
     
     
     function searchScriptHome(){
@@ -137,7 +137,7 @@
             type: "POST",
             "crossDomain": true,
             "headers": {
-                "accept": "application/json",
+                "Content-Type":"application/javascript",
                 "Access-Control-Allow-Origin":"*"
             },
             dataType: 'jsonp',
@@ -203,7 +203,7 @@
             type: "POST",
             "crossDomain": true,
             "headers": {
-                "accept": "application/json",
+                "Content-Type":"application/javascript",
                 "Access-Control-Allow-Origin":"*"
             },
             dataType: 'jsonp',
@@ -251,7 +251,7 @@
             type: "POST",
             "crossDomain": true,
             "headers": {
-                "accept": "application/json",
+                "Content-Type":"application/javascript",
                 "Access-Control-Allow-Origin":"*"
             },
             dataType: 'jsonp',
@@ -287,8 +287,8 @@
                 type: "POST",
                 "crossDomain": true,
                 "headers": {
-                "accept": "application/json",
-                "Access-Control-Allow-Origin":"*"
+                    "Content-Type":"application/javascript",
+                    "Access-Control-Allow-Origin":"*"
                 },
                 url: "/logistic/get_top_loosers/",
                 dataType: 'jsonp',
@@ -333,7 +333,7 @@
                 type: "POST",
                 "crossDomain": true,
                 "headers": {
-                    "accept": "application/json",
+                    "Content-Type":"application/javascript",
                     "Access-Control-Allow-Origin":"*"
                 },
                 dataType: 'jsonp',
@@ -364,9 +364,10 @@
                 type: "POST",
                 "crossDomain": true,
                 "headers": {
-                    "accept": "application/json",
+                    "Content-Type":"application/javascript",
                     "Access-Control-Allow-Origin":"*"
                 },
+                
                 dataType: 'jsonp',
                 url: "/logistic/get_top_gainer/",
                 data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
