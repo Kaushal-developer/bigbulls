@@ -50,7 +50,6 @@ sqlparse==0.4.2
 tenacity==8.0.1
 threadpoolctl==3.0.0
 tomli==1.2.2
-torch==1.10.0
 tradingview-ta==3.2.9
 twilio==7.2.0
 typing-extensions==3.10.0.2
