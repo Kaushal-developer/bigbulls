@@ -20,18 +20,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
-# SECRET_KEY = 'django-insecure-6&%3f#n)n*xw_y_xdwn2%&946u)e(k+b89$qk=%lco!sx4-r)$'
+# SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'django-insecure-6&%3f#n)n*xw_y_xdwn2%&946u)e(k+b89$qk=%lco!sx4-r)$'
 # SECRET_KEY = 'django-insecure-6&%3f#n)n*xw_y_xdwn2%&946u)e(k+b89$qk=%lco!sx4-r)$'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','bigbulls.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1','https://bigbulls.herokuapp.com/']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'logistic',
     'django.contrib.staticfiles',
     'django.contrib.admin',
@@ -42,6 +43,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -80,6 +83,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': '127.0.0.1',
+        'PORT': 8006,
     }
 }
 
@@ -128,3 +135,8 @@ STATIC_ROOT=os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 django_heroku.settings(config=locals(), staticfiles=False,logging=False)
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:8000',
+# )

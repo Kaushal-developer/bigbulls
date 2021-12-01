@@ -9,7 +9,7 @@ from urllib.parse import quote
 from nsetools import Nse
 from numpy.lib.histograms import histogram_bin_edges
 from requests.api import get
-# from stocks.models import Stockslist,AdvanceDecline
+from logistic.models import Scrips
 from datetime import date
 from nsepy import get_history, history
 from django.http import JsonResponse
@@ -27,36 +27,54 @@ from sklearn import linear_model
 from json import JSONEncoder
 import os
 from twilio.rest import Client
+import urllib.request
+from django.views.decorators.csrf import csrf_exempt
 
-
-
+@csrf_exempt
 def home(request):
-    return render(request, "stocks/home.html")
+    # data = Scrips.objects.values("code","name")
+    # final_scripts = []
+    # for record in data:
+    #     info={}
+    #     info["code"] = record['code']
+    #     info["name"] = record["name"]
+    #     final_scripts.append(final_scripts)
+    try:
+        nse = Nse()
+        scripts = nse.get_stock_codes()
+        return render(request,'index.html', {'scrips':scripts})
+    except Exception as e:
+        return HttpResponse('invalid')
 
-
+@csrf_exempt
 def get_monthly_active(request):
     nse = Nse()
     monthly_active_trending = nse.get_active_monthly()
     return JsonResponse({'monthly_active_trending': monthly_active_trending})
 
 
+@csrf_exempt
 def get_advance_declined(request):
     nse = Nse()
     adv_dec = nse.get_advances_declines()
     return JsonResponse({'adv_dec': adv_dec})
 
 
+@csrf_exempt
 def get_top_gainer(request):
     nse = Nse()
     top_gainers = nse.get_top_gainers()
     return JsonResponse({'top_gainers': top_gainers})
 
 
+@csrf_exempt
 def get_top_loosers(request):
     nse = Nse()
     top_losers = nse.get_top_losers()
     return JsonResponse({'top_losers': top_losers})
 
+
+@csrf_exempt
 def get_history_data(request):
     from nsepy import get_history
     nse = Nse()
@@ -86,9 +104,12 @@ def get_history_data(request):
     else:
         return HttpResponse("Enter correct script")
 
+
+@csrf_exempt
 def get_realtime_data(request):
     nse = Nse()
     script = request.POST.get('symbol')
+    print(script)
     if nse.is_valid_code(script):
         data = nse.get_quote(script)
         for info in data:
@@ -115,3 +136,6 @@ class NumpyArrayEncoder(JSONEncoder):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
         return JSONEncoder.default(self, obj)
+
+
+
